@@ -1,8 +1,9 @@
 const express = require("express");
 require("dotenv").config();
-const cors = require("cors"); 
+const cors = require("cors");
 const { connectToDatabase, connection } = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
+const bookRoutes = require("./routes/bookRoutes");
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRoutes);
+
+app.use("/books", bookRoutes);
 
 const PORT_NO = process.env.PORT;
 
