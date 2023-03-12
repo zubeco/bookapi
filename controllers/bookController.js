@@ -1,38 +1,37 @@
-const axios = require('axios');
-
-// exports.searchBooks = async (req, res) => {
-//   const { q } = req.query;
-
-//   try {
-//     const response = await axios.get(`https://openlibrary.org/search.json?q=${q}`);
-//     const books = response.data.docs;
-//     res.status(200).json({ books });
-//   } catch (error) {
-//     res.status(500).json({ error });
-//   }
-// };
+const axios = require("axios");
 
 exports.searchBooks = async (req, res) => {
-  const { q, page, limit } = req.query;
+  const { q } = req.query;
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
 
-  // Validate page and limit
-  if (!page || isNaN(page) || page < 1) {
-    return res.status(400).json({ error: "Invalid or missing page parameter" });
+  if (!q) {
+    res.status(400).json({ error: "The 'q' parameter is required." });
+    return;
   }
-  if (!limit || isNaN(limit) || limit < 1) {
-    return res
+
+  if (!Number.isInteger(page) || page <= 0) {
+    res
       .status(400)
-      .json({ error: "Invalid or missing limit parameter" });
+      .json({ error: "The 'page' parameter must be a positive integer." });
+    return;
+  }
+
+  if (!Number.isInteger(limit) || limit <= 0) {
+    res
+      .status(400)
+      .json({ error: "The 'limit' parameter must be a positive integer." });
+    return;
   }
 
   const startIndex = (page - 1) * limit;
 
   try {
     const response = await axios.get(
-      `https://openlibrary.org/search.json?q=${q}`
+      `https://openlibrary.org/search.json?q=${q}&limit=${limit}&offset=${startIndex}`
     );
+    const books = response.data.docs;
     const totalResults = response.data.numFound;
-    const books = response.data.docs.slice(startIndex, startIndex + limit);
 
     const totalPages = Math.ceil(totalResults / limit);
     const currentPage = page > totalPages ? totalPages : page;
