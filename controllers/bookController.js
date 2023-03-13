@@ -30,7 +30,12 @@ exports.searchBooks = async (req, res) => {
     const response = await axios.get(
       `https://openlibrary.org/search.json?q=${q}&limit=${limit}&offset=${startIndex}`
     );
-    const books = response.data.docs;
+    const storedata = response.data.docs;
+    const books = storedata.map((book) => ({
+      ...book,
+      key: book.key.replace("/works/", ""),
+      coverUrl: `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`,
+    }));
     const totalResults = response.data.numFound;
 
     const totalPages = Math.ceil(totalResults / limit);
@@ -41,9 +46,9 @@ exports.searchBooks = async (req, res) => {
       totalPages,
       totalResults,
     };
-
     res.status(200).json({ books, pagination });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error });
   }
 };
