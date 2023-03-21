@@ -5,6 +5,7 @@ const { connectToDatabase, connection } = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const bookRoutes = require("./routes/bookRoutes");
 const bookIdRoutes = require("./routes/bookIdRoute");
+const popularRoute = require("./routes/popularRoute");
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.use("/users", userRoutes);
 app.use("/books", bookRoutes);
 
 app.use("/book", bookIdRoutes);
+
+app.use("/books", popularRoute);
 
 const PORT_NO = process.env.PORT;
 
