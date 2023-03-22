@@ -13,6 +13,7 @@ exports.getPopularBooks = async (req, res) => {
       coverUrl: `http://covers.openlibrary.org/b/id/${work.cover_id}-M.jpg`,
       openLibraryUrl: `http://openlibrary.org${work.key}`,
       firstPublishYear: work.first_publish_year,
+      edition_count: work.edition_count,
     }));
     res.json(bookData);
   } catch (error) {
