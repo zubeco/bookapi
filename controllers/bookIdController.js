@@ -13,8 +13,8 @@ exports.getBookById = async (req, res) => {
       ...storedata,
       coverUrl: `https://covers.openlibrary.org/b/id/${storedata.covers}-M.jpg`,
     };
+    console.log(book);
 
-    
     res.status(200).json(book);
   } catch (error) {
     res.status(500).json({ error });
