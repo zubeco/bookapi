@@ -31,13 +31,22 @@ exports.addToCart = async (req, res) => {
     } else {
       const openLibraryUrl = `https://openlibrary.org/books/${bookId}.json`;
       const { data } = await axios.get(openLibraryUrl);
-      const { title } = data;
+      const { title, covers } = data;
+
+      const price = Math.floor(Math.random() * 250) + 1; // generate a random price between 1 and 250
+
+      const coverUrl = `https://covers.openlibrary.org/b/id/${covers[0]}-M.jpg`;
+
+      const instock = Math.floor(Math.random() * 101); // generate a random number between 0 and 100 for instock
 
       const newCartItem = new CartItem({
         itemId: bookId,
         name: title,
         quantity: 1,
+        price: price,
         user: userId,
+        coverUrl: coverUrl,
+        instock: instock,
       });
 
       const savedCartItem = await newCartItem.save();
@@ -47,6 +56,8 @@ exports.addToCart = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
 
 exports.removeFromCart = async (req, res) => {
   const { itemId, userId } = req.params;
